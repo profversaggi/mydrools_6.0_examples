@@ -1,0 +1,47 @@
+package com.sample
+
+// This is a simple Drools file that has 2 simple rules, one that says hello and one good bye.
+ 
+// Import the Message Object from the calling Java class (DroolsTest)...
+import com.sample.DroolsTest.Message;
+ 
+
+/*
+This rule is a typical LHS Pattern with a binding variable which gets used later in the RHS.
+'m' gets bound to the matched object (constrained by status == Message.HELLO, etc).
+Once the LHS matches, it fires the RHS which prints out a message, sets the new status
+and updates the rule.
+NOTE:
+Drools recommend using property access ex: (age) over using POJO getters explicitly ex: (getAge()),
+because of performance enhancements through field indexing. The LHS is also a constraint which evals 
+to either TRUE or FALSE if status == Message.HELLO and there is a message.
+*/ 
+
+rule "Hello World"
+    when
+        m : Message( status == Message.HELLO, myMessage : message )
+    then
+        System.out.println( myMessage );
+        m.setMessage( "Goodbye cruel world" );
+        m.setStatus( Message.GOODBYE );
+        update( m );
+end
+
+
+
+/*
+This rule matches when the message status is set to Message.GOODBYE, and prints out that message.
+*/
+
+rule "GoodBye"
+    when
+        Message( status == Message.GOODBYE, myMessage : message )
+    then
+        System.out.println( myMessage );
+end
+
+
+
+
+
+

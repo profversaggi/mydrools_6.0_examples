@@ -1,0 +1,114 @@
+<object-stream>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>1</factId>
+  <objectToString>A[NOTRUN]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>2</factId>
+  <objectToString>B[NOTRUN]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>3</factId>
+  <objectToString>C[NOTRUN]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>4</factId>
+  <objectToString>D[NOTRUN]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>Bootstrap [1]</activationId>
+  <rule>Bootstrap</rule>
+  <declarations>a=A[NOTRUN](1)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>Bootstrap [1]</activationId>
+  <rule>Bootstrap</rule>
+  <declarations>a=A[NOTRUN](1)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>1</factId>
+  <objectToString>A[FINISHED]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>Bootstrap [1]</activationId>
+  <rule>Bootstrap</rule>
+  <declarations>a=A[FINISHED](1)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>A to B [1, 2]</activationId>
+  <rule>A to B</rule>
+  <declarations>b=B[NOTRUN](2)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>A to B [1, 2]</activationId>
+  <rule>A to B</rule>
+  <declarations>b=B[NOTRUN](2)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>B[FINISHED]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>A to B [1, 2]</activationId>
+  <rule>A to B</rule>
+  <declarations>b=B[FINISHED](2)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>B to C [2, 3]</activationId>
+  <rule>B to C</rule>
+  <declarations>c=C[NOTRUN](3)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>B to C [2, 3]</activationId>
+  <rule>B to C</rule>
+  <declarations>c=C[NOTRUN](3)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>3</factId>
+  <objectToString>C[FINISHED]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>B to C [2, 3]</activationId>
+  <rule>B to C</rule>
+  <declarations>c=C[FINISHED](3)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>B to D [2, 4]</activationId>
+  <rule>B to D</rule>
+  <declarations>d=D[NOTRUN](4)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>B to D [2, 4]</activationId>
+  <rule>B to D</rule>
+  <declarations>d=D[NOTRUN](4)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+<org.drools.core.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>4</factId>
+  <objectToString>D[FINISHED]</objectToString>
+</org.drools.core.audit.event.ObjectLogEvent>
+<org.drools.core.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>B to D [2, 4]</activationId>
+  <rule>B to D</rule>
+  <declarations>d=D[FINISHED](4)</declarations>
+</org.drools.core.audit.event.ActivationLogEvent>
+</object-stream>

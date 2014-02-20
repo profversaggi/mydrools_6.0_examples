@@ -1,0 +1,127 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.shopping
+ 
+// Set the Dialect to  'mvel' 
+dialect "mvel"
+
+// Import the various objects from the calling Java Class (ShoppingExample) ...
+import org.drools.examples.shopping.ShoppingExample.Customer
+import org.drools.examples.shopping.ShoppingExample.Product
+import org.drools.examples.shopping.ShoppingExample.Purchase
+import org.drools.examples.shopping.ShoppingExample.Discount
+ 
+ 
+ 
+/*
+Purchase Notification Rule:
+This rule has a salience of 10, so it's guarranteed to have firing priority.  
+If a customer exists in working memory: Customer(), who has made a purchase 
+Purchase( customer == $c), then print out the proper notification.
+Notice the use of the objects methods in the RHS.
+*/
+ 
+rule "Purchase notification"
+    salience 10
+
+    when
+        $c : Customer()
+        $p : Purchase( customer == $c)
+    then
+        System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
+end
+ 
+ 
+/*
+Discount Removed Rule:
+This rule checks working memory to see if a customer esists which does *not* have a discount,
+then it prints out the proper notification.
+Notice the use of the objects methods in the RHS.
+*/
+ 
+rule "Discount removed notification"
+    when
+        $c : Customer()
+        not Discount( customer == $c )
+    then
+        $c.discount = 0;
+        System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
+end
+
+
+/*
+Discount Award Notification Rule:
+This rule  checks working memory to see if a customer exists which does have a discount,
+and prints the proper notification.
+Notice the use of the objects methods in the RHS.
+*/
+
+rule "Discount awarded notification"
+    when
+        $c : Customer()
+        $d : Discount( customer == $c )
+    then
+        System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
+end
+
+
+/*
+Apply Discount Rule:
+This rule checks to see if a customer exists which has current total purchases over $100 and then applies a 10%
+discount to any further purchases. To do that it creates, sets, and inserts a new discount object into working
+memory representing that new discount.
+
+Note: This rule only fires ONCE (no-loop true), and uses JAVA as it's dialect language (dialect "java").
+Notice the use of the objects methods in the RHS.
+
+Primer on - 'From Accumulate':
+This is maybe one of the most complex Patterns you can use. It consist in a Left Pattern, a Source Pattern
+and a Formula Section. 
+
+See 16.2.8., item #4 for more discussion: 
+http://docs.jboss.org/drools/release/6.0.1.Final/drools-docs/html_single/index.html#d0e23
+Pay special attention to this: http://planet.jboss.org/post/how_to_implement_accumulate_functions
+Note: Drools ships with several accumulate functions that are available out of the box, like sum, 
+average, min, max, count, collectSet and collectList. 
+
+The general syntax of the accumulate CE with inline custom code is: [7.8.3.7.4.3. Accumulate with inline custom code]
+
+<result pattern> from accumulate( <source pattern>,
+                                  init( <init code> ),
+                                  action( <action code> ),
+                                  reverse( <reverse code> ),
+                                  result( <result expression> ) )
+                                  
+Also note: 7.8.3.7.4.2. Alternate Syntax: single function with return type.                                  
+Notice the use of the objects methods in the LHS and RHS.                                  
+*/
+
+rule "Apply 10% discount if total purcahses is over 100"
+    no-loop true
+    dialect "java"
+    when
+        $c : Customer()
+        $i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ), sum( $price ) )
+    then
+          $c.setDiscount( 10 );
+        insertLogical( new Discount($c, 10) );
+        System.out.println( "Customer " + $c.getName() + " now has a grand shopping total of " + $i );
+end
+
+
+
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+    <kbase name="rules" packages="rules">
+        <ksession name="ksession-rules"/>
+    </kbase>
+    
+    <kbase name="org.drools.examples.fibonacci" packages="org.drools.examples.fibonacci">
+        <ksession name="FibonacciKS"/>
+    </kbase> 
+    
+    <kbase name="org.drools.examples.backwardchaining" packages="org.drools.examples.backwardchaining">
+        <ksession name="HouseOfDoomKS"/>
+    </kbase> 
+        
+    <kbase name="org.drools.examples.honestpolitician" packages="org.drools.examples.honestpolitician">
+        <ksession name="HonestPoliticianKS"/>
+    </kbase>  
+    
+    <kbase name="org.drools.examples.golfing" packages="org.drools.examples.golfing">
+        <ksession name="GolfingKS"/>
+    </kbase>  
+    
+    <kbase name="org.drools.examples.shopping" packages="org.drools.examples.shopping">
+        <ksession name="ShoppingKS"/>
+    </kbase> 
+           
+    <kbase name="StateSalienceKB" packages="org.drools.examples.state.salience">
+        <ksession name="StateSalienceKS"/>
+    </kbase>
+
+    <kbase name="StateAgendaGroupKB" packages="org.drools.examples.state.agendagroup">
+        <ksession name="StateAgendaGroupKS"/>
+    </kbase>   
+      
+    <kbase name="org.drools.examples.cashflow" packages="org.drools.examples.cashflow">
+        <ksession name="CashFlowKS"/>
+    </kbase>  
+    
+    <kbase name="org.drools.games.numberguess" packages="org.drools.games.numberguess">
+        <ksession name="NumberGuessKS"/>
+    </kbase> 
+    
+</kmodule>

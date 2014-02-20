@@ -1,0 +1,143 @@
+package org.drools.examples.backwardchaining;
+
+// Import the Location Object from the calling Java Object class (Location)...
+import org.drools.examples.backwardchaining.Location;
+
+dialect  "mvel"             // Define the specific language used from this point forward.
+
+/*
+This is where the *magic* happens in this example. It is the fact that Drools now permits 
+Queries to call other queries, combined with optional query arguments (that could be variables)
+which provides derivation query style backward chaining, or as the video will articulate - Graph 
+Reasoning.  Each vintage will be explained individually below.
+*/ 
+
+
+/*
+A QUERY is a simple way to search the working memory for facts that match the stated conditions. 
+Therefore, it contains only the structure of the LHS of a rule, so that you specify neither "when" 
+nor "then". The query is the vehicle that provides the power of the backward chaining infrastructure
+of Drools, and in this case it's the isContainedIn query. 
+
+Notice that the isContainedIn query is recursive, it calls itself in the OR clause. That and the use of 
+the "Z" variable (which gets matched against) constitute the recursive properties of the backward chaining
+infrastructure. The query will recursively call itself down levels of a simple graph until it finds a 
+solution and then it bubbles that same solution back through the series of recursive calls instantiating 
+the values it finds or dervies to the open variables at each level the query visits in route to obtaining
+a solution to the query. If what I just wrote sounds greek to you then peruse the youtube video for a a more
+visual explaination: http://www.youtube.com/watch?v=fCjIRVSRFvA .
+*/
+
+query isContainedIn( String x, String y )
+  Location( x, y; )
+  or
+  ( Location( z, y; ) and isContainedIn( x, z; ) )
+end
+
+
+
+/*
+This is a simple rule with a salience of 10 (that ensures it will always fire) that simply prints out 
+every string that enters the KB so we have a trail of activity which we can interrogate along the way.
+Remember that the calling POJO executes: ksession.insert( "go1" ). This rule is what effectively tracks 
+each time that insertion is executed by printing out that string ("go1" - "go5").
+*/ 
+
+rule "go" salience 10
+when
+    $s : String(  )
+then
+    System.out.println( $s );
+end
+
+
+/*
+This rule checks to see if the string "go1" has been added to the KB and if the query of 
+the 'office' is contained in the 'house' evaluates to TRUE. If so that it's logically concluded
+that "office is in the house", and the rule prints this fact out. It is the simplist of cases
+where Drools neatly matches a query again a concrete fact int the KB.
+*/ 
+
+rule "go1"
+when
+    String( this == "go1" )
+    isContainedIn("Office", "House"; )
+then
+    System.out.println( "office is in the house" );
+end
+
+
+/*
+This rule is the first rule that clearly illustrates the backward chaining properties of Drools.
+The query is effectively: Is the Draw in the House? The draw is, however it's in a desk, that is in 
+the office, which is in the house. To be able to prove that solution, Drools will have to recurse DOWN 
+that many levels to get at a fact it can prove in the KB, and then recurse back UP those same levels,
+binding each of those values to the "Z" variable in the isContainedIn query (think Prolog), until 
+it reaches the original query to satisify it. That is the essence and power of a backward chaining 
+inference engine like Prolog, and in this case, an aspect of a forward chaining infreence engine (Drools), 
+which just so happens to also have backward chaining capabilities as well.
+*/ 
+
+rule "go2"
+when
+    String( this == "go2" )
+    isContainedIn("Draw", "House"; )
+then
+    System.out.println( "Draw in the House" );
+end
+
+
+/*
+This rule illustrates the flexibility of using a forward chaining inference engine with inherent 
+backward chaining facilities built into it. This query asks for something which does not exist in
+the context of what's know - a 'key'. So given the fact that the Drools engine is an entity that 
+reacts to changes in the KB, it will just sit on this rule and wait until the conditions change 
+to a state where it can be fired. Those conditions do change when the following gets inserted into
+the KB: ksession.insert( new Location("Key", "Draw") ) at a later point in time. That causes this
+rule to fire, performing the same backward chaining as above until it finds the key. 
+*/ 
+
+rule "go3"
+when
+    String( this == "go3" )
+    isContainedIn("Key", "Office"; )
+then
+    System.out.println( "Key in the Office" );
+end
+
+
+/*
+This rule is illustrates something the Prolog world has known for a long time: backward chaining permits
+you to ask questions such as: how much, how many, who, what exists, etc ... of the KB. This 
+can be done because of the concept of Unification (and binding) of values to uninstantiated variables in
+queries. In this particular case it's the variable 'thing'. By executing a query with an uninstantiated
+variable in one of the argument slots, the backward chaining inference engine will bind *each* value it 
+finds to the the variable (thing), and return that. 
+*/ 
+
+rule "go4"
+when
+    String( this == "go4" )
+    isContainedIn(thing, "Office"; )
+then
+    System.out.println( "thing " + thing + " is in the Office" );
+end
+
+
+/*
+This rule builds on the previous rule and incorporates a variable in *both* positions of the arguments to
+the query effectively telling the backward chaining inference engine to return everything that is contained 
+in everything else, which it happily does.
+*/ 
+
+rule "go5"
+when
+    String( this == "go5" )
+    isContainedIn(thing, location; )
+then
+    System.out.println( "thing " + thing + " is in " + location );
+end
+
+
+
+

@@ -1,0 +1,53 @@
+package org.drools.examples.cashflow;
+
+
+dialect  "mvel"
+
+
+/*
+This rule will fire if a chashflow object exits in WM that has a cashflowtype of CREDIT,
+a valid account number, and a date which is w/in the start and end dates for that period. If
+so, the the RHS of the ruls will increase the account balance by the cashflow amount.
+Notice the "&&" which use short cut syntax to avoid repeating the field name twice in the last 
+line of the LHS.
+*/
+
+rule "Increase balance for AccountPeriod Credits"
+when
+   ap : AccountPeriod( )
+   acc : Account( )
+   cf : CashFlow( type == CashFlowType.CREDIT, accountNo == acc.accountNo, date >= ap.start && <= ap.end )
+then
+   acc.balance = acc.balance + cf.amount;
+end
+
+
+/*
+This rule will do the opposite of the above rule. It will deduct the DEBIT amount from the account balance.
+*/
+rule "Decrease balance for AccountPeriod Debits"
+when
+   ap : AccountPeriod( )
+   acc : Account( )
+   cf : CashFlow( type == CashFlowType.DEBIT, accountNo == acc.accountNo, date >= ap.start && <= ap.end )
+then
+   acc.balance = acc.balance - cf.amount;
+end
+
+
+/*
+If there is an object of accounting period and an account in WM, this rule prints out the account balance.
+This rule will always fire last with a salience of -50.
+*/
+rule "Print blance for AccountPeriod" salience -50
+when
+       ap : AccountPeriod()
+       acc : Account( )
+then
+       System.out.println( "Account Number " + acc.accountNo + " balance " + acc.balance );
+end
+
+
+
+
+

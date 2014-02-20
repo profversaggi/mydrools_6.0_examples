@@ -1,0 +1,119 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.state.agendagroup
+ 
+ // Import the State Object from the calling Java class (StateExampleUsingAgendaGroup)... 
+import org.drools.examples.state.State
+
+/*
+The following code configures the rules engine to listen for property changes on those facts which have 'PropertyChangeSupport '.
+*/
+
+declare type State
+    @propertyChangeSupport
+end
+ 
+ 
+/*
+BootStrap Rule:
+This rule fires when a state object exists in memory which has a name attribute = a, 
+and a state attribute which has not been set to run. When it executes, it simply 
+prints a message and sets its own state to completed.
+*/
+ 
+rule Bootstrap
+    when
+        a : State(name == "A", state == State.NOTRUN )
+    then
+        System.out.println(a.getName() + " finished" );
+        a.setState( State.FINISHED );
+end
+
+ 
+ /*
+This rule fires if there exists in working memory a state object (name=a,state=finished) *and*
+another state object (name=b, state=notrun). It will execute in the similar manner, by printing
+a message and setting it's state to finished.
+*/
+ 
+rule "A to B"
+    when
+        State(name == "A", state == State.FINISHED )
+        b : State(name == "B", state == State.NOTRUN )
+    then
+        System.out.println(b.getName() + " finished" );
+        b.setState( State.FINISHED );
+end
+
+
+/*
+AGENDA RULE:
+Agenda groups are a way to partition the Agenda into groups and to control 
+which groups can execute. By default, all rules are in the agenda group "MAIN". 
+The "agenda-group" attribute lets you specify a different agenda group for the 
+rule. Initially, a Working Memory has its focus on the Agenda group "MAIN". A 
+group's rules will only fire when the group receives the focus. This can be 
+achieved either by using the method by 'setFocus()' or the rule attribute 
+'auto-focus'. "auto-focus" means that the rule automatically sets the focus to 
+its agenda group when the rule is matched and activated. 
+
+NOTE:
+It is this "auto-focus" that enables rule "B to C" to fire BEFORE "B to D". 
+However it is the 'setFocus' method in the RHS that sets the focus to the
+agenda-group "B to D" and forces it to run after this rule. 
+
+Pay particular attention to this line:
+drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
+*/
+
+rule "B to C"
+        agenda-group "B to C"
+        auto-focus true
+    when
+        State(name == "B", state == State.FINISHED )
+        c : State(name == "C", state == State.NOTRUN )
+    then
+        System.out.println(c.getName() + " finished" );
+        c.setState( State.FINISHED );
+        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
+end
+
+
+/*
+AGENDA RULE:
+it is the 'setFocus' method in the RHS of the previous rule ("B to C") that sets the focus 
+to this agenda-group "B to D" and forces this rule to run after that rule. 
+
+Pay particular attention to this line:
+drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
+*/
+
+rule "B to D"
+    agenda-group "B to D"
+    when
+        State(name == "B", state == State.FINISHED )
+        d : State(name == "D", state == State.NOTRUN )
+    then
+        System.out.println(d.getName() + " finished" );
+        d.setState( State.FINISHED );
+end
+
+
+
+
+
+

@@ -1,0 +1,211 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fswiss\fcharset0 Arial;}{\f1\fnil Consolas;}{\f2\fnil\fcharset0 Consolas;}}
+{\colortbl ;\red0\green128\blue128;\red63\green127\blue127;\red127\green0\blue127;\red0\green0\blue0;\red42\green0\blue255;\red232\green242\blue254;\red255\green0\blue0;\red0\green0\blue128;}
+{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\ul\b\f0\fs24 DEVELOPER NOTES\ulnone\b0\fs20\par
+\par
+These are simply my developer notes, not a tutorial, or even 'proper' english sometimes. They are simply a means \par
+of recording 'things' which I *might* refer back to in time should I need it ... nothing more. However, they are in order\par
+top to bottom, so read through in case I document a problem early on and solve it later on. Which I do often ....\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\b Drools Examples 6.0.0 Final\b0\par
+http://grepcode.com/project/repository.jboss.org/nexus/content/repositories/releases/org.drools/drools-examples/\par
+\par
+\b Examples Issues: => \b0 Where to get the zip'd sources ...\par
+http://comments.gmane.org/gmane.comp.java.drools.user/40403\par
+\par
+\b GrepCode Repository:\b0\par
+http://grepcode.com/snapshot/repository.jboss.org/nexus/content/repositories/releases/org.drools/drools-examples/6.0.0.CR5/\par
+\par
+\par
+\par
+\par
+\par
+\par
+From the ReadME in the Drools 6.X Release:\par
+\par
+\b Run the examples in Eclipse\b0\par
+---------------------------\par
+\par
+\par
+\b Conventional Install ....\b0\par
+Open Eclipse, install the Drools plugin, as described in the introduction reference manual.\par
+Open menu Window, menu item Preferences, tree item Drools, tree item Installed Drools Runtime environments\par
+Add the dir "binaries/" from the zip as a new Drools Runtime Environment.\par
+Activate the checkbox of that newly created runtime environment.\par
+\b\i Restart eclipse.\b0\i0\par
+\par
+\par
+Open menu File, menu item Import..., tree item General, tree item Existing Projects into Workspace, button Next\par
+and select root directory "examples/sources/" from the zip, button Finish.\par
+\par
+\par
+\ul\b I did this\ulnone : \b0\i (since Mavin is preferred in Drools V6)    \i0 .... Did not work! \par
+\par
+\b Alternatively\b0 , \i if you have the \b m2eclipse \b0 plugin installed\i0 :\par
+Open menu File, menu item Import, tree item Maven, tree item Existing Maven Projects, button Next\par
+and select "examples/sources/" from the zip, button Finish.\par
+\par
+Open menu Run, menu item Run configurations, add new Java Application\par
+with main class "org.drools.examples.DroolsExamplesApp"\par
+and VM arguments "-Xms256m -Xmx512m -server", click button Run.\par
+\par
+\par
+\b README on Building from Source:\b0\par
+https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md#source-control-with-git\par
+\par
+\par
+\b Drools 6.X Docs: Examples.....\b0\par
+http://docs.jboss.org/drools/release/6.0.1.Final/drools-docs/html/ch19.html#d0e17413\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\ul\b\fs32 Drools Examples Porting Project Notes\ulnone :\b0\fs20\par
+\par
+\b Notes:\b0\par
+This project is to take the stock V6 Drools examples and port them over to MyDroolsExamples Project for inclusion in my GitHub Repository.\par
+\par
+\par
+\b First \b0 - Create an stock Drools V6 Project w/Hello World Example, add in the external JAR: slf4j-jdk14-1.7.5.jar to get the logging working correctly, test run as Java Application, and convert to Maven project.  Drools V6 is inherently Maven so this is a critical step, creates the important pom.xml file.\par
+\par
+\par
+\b kModule.xml\b0\par
+This is the file that tells drools where to find the Rules and how to name the XML references that load them Think Injection style IoC (Spring Like) infrastructure. It can also be done programatically.  \par
+\par
+\b Target/com/META-INF/kmodule.xml:\b0\par
+\par
+\cf1\f1 <?\cf2 xml\cf0  \cf3 version\cf4 =\cf5\i "1.0"\cf0\i0  \cf3 encoding\cf4 =\cf5\i "UTF-8"\cf1\i0 ?>\cf0\par
+\cf1 <\cf2 kmodule\cf0  \cf3 xmlns\cf4 =\cf5\i "http://jboss.org/kie/6.0.0/kmodule"\cf1\i0 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "rules"\cf0\i0  \cf3 packages\cf4 =\cf5\i "rules"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "ksession-rules"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf0\par
+\cf1 </\cf2 kmodule\cf1 >\par
+\par
+\par
+\par
+\cf4\b\f2 First Port\cf1\b0\f1\par
+\cf4\highlight6\ul\b org.drools.examples.fibonacci\cf1\highlight0\ulnone\b0\par
+\cf0\f0\par
+1. Clone the Packages for the Java and the Rules, copy over the Java Class and the DRL file in their respective places, and ammend the \b kmodule.xml \b0 file to be:\par
+\par
+\cf1\f1 <?\cf2 xml\cf0  \cf3 version\cf4 =\cf5\i "1.0"\cf0\i0  \cf3 encoding\cf4 =\cf5\i "UTF-8"\cf1\i0 ?>\cf0\par
+\cf1 <\cf2 kmodule\cf0  \cf3 xmlns\cf4 =\cf5\i "http://jboss.org/kie/6.0.0/kmodule"\cf1\i0 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "rules"\cf0\i0  \cf3 packages\cf4 =\cf5\i "rules"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "ksession-rules"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.fibonacci"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.fibonacci"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "FibonacciKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf0\par
+\cf1 </\cf2 kmodule\cf1 >\par
+\par
+\par
+\par
+\cf4\b Adding the KIE plugin to a Maven pom.xml\f2  \i -> A Source of problems\cf0\b0\i0\f0\par
+\par
+THIS:\par
+      <plugin>\par
+        <groupId>org.kie</groupId>\par
+        <artifactId>kie-maven-plugin</artifactId>\par
+        <version>$\{project.version\}</version>\par
+        <extensions>true</extensions>\par
+      </plugin>\par
+\par
+BECOMES THIS:\par
+\cf4\f1       \cf1 <\cf2 plugin\cf1 >\cf0\par
+\cf4         \cf1 <\cf2 groupId\cf1 >\cf4 org.kie\cf1 </\cf2 groupId\cf1 >\cf0\par
+\cf4         \cf1 <\cf2 artifactId\cf1 >\cf4 kie-maven-plugin\cf1 </\cf2 artifactId\cf1 >\cf0\par
+\cf4         \cf1 <\cf2 version\cf1 >\cf4 6.0.1.Final\cf1 </\cf2 version\cf1 >\cf0\par
+\cf4         \cf1 <\cf2 extensions\cf1 >\cf4 true\cf1 </\cf2 extensions\cf1 >\cf0\par
+\cf4       \cf1 </\cf2 plugin\cf1 >\cf4   \par
+\par
+\f2 AFTER LOOKING HERE:\cf0\f0\par
+http://mvnrepository.com/artifact/org.kie/kie-maven-plugin/6.0.1.Final\par
+... and changing this:\b  \cf4\f1 6.0.1.Final\cf0\b0\f0\par
+\par
+***> and then doing a \b Maven: Update Project execution\b0\par
+\par
+\par
+\par
+Running the Java class gives me this:\par
+\cf7\f1 SEVERE: Unknown KieSession name: FibonacciKS\cf0\par
+\cf7 Exception in thread "main" \cf8\ul java.lang.NullPointerException\cf0\ulnone\par
+\cf7\tab at org.drools.examples.fibonacci.FibonacciExample.main(\cf8\ul FibonacciExample.java:31\cf7\ulnone )\cf0\f0\par
+\par
+Therefore the \b kmodule.xml \b0 is incorrect ....\par
+\par
+Researching Here: \par
+http://stackoverflow.com/questions/20315910/getting-null-pointer-exception-while-running-helloworld-in-drools\par
+http://stackoverflow.com/questions/21466716/unknown-kiesession-name-in-drools-6-0-while-trying-to-add-drools-to-existing-ma\par
+\par
+\par
+\b This doc talks about the various ways a KBase can be built, and there are \ul many\ulnone  ....\b0\par
+http://docs.jboss.org/drools/release/6.0.1.Final/drools-docs/html/KIEChapter.html#KIEExamplesSection\par
+\par
+\par
+\b This is the code base for the examples....\b0\par
+https://github.com/droolsjbpm/drools/tree/master/drools-examples-api\par
+\par
+\par
+\par
+\par
+\ul\b SOLUTION\ulnone :\b0\par
+\par
+This kmodule.xml is found under \b src/main/resources/META-INF/kmodule.xml\b0\par
+... once I added the highlighted XML extry it worked like a charm. The "\cf2\f1 kbase\cf0  \cf3 name\f2 "\cf4  is the location of the RULES DRL,\par
+the "\cf2\f1 ksession\cf0  \cf3 name\f2 " \cf4 is the Java Class location. So in this case it would be \cf0\f0\par
+\par
+\par
+\par
+\par
+\cf2\b\f1 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.fibonacci"\cf4\b0\i0\f2\tab src/main/\ul\b resources\ulnone\b0 /\b\i\f1 org.drools.examples.fibonacci\cf0\b0\i0\f0\par
+\cf2\b\f1 ksession\cf0  \cf3 name\cf4 =\cf5\i "FibonacciKS"\f2\tab\tab\tab\tab\cf4\b0\i0 src/main/\ul\b java\ulnone\b0 /\b\i\f1 org.drools.examples.fibonacci\cf0\b0\i0\f0\par
+\par
+\par
+\par
+\ul\b This is a later version of the kmodule.xml\ulnone\b0 :\par
+\par
+\cf1\f1 <?\cf2 xml\cf0  \cf3 version\cf4 =\cf5\i "1.0"\cf0\i0  \cf3 encoding\cf4 =\cf5\i "UTF-8"\cf1\i0 ?>\cf0\par
+\cf1 <\cf2 kmodule\cf0  \cf3 xmlns\cf4 =\cf5\i "\cf4\ul http://jboss.org/kie/6.0.0/kmodule\cf5\ulnone "\cf1\i0 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "rules"\cf0\i0  \cf3 packages\cf4 =\cf5\i "rules"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "ksession-rules"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.fibonacci"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.fibonacci"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "FibonacciKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4  \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.backwardchaining"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.backwardchaining"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "HouseOfDoomKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4  \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.honestpolitician"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.honestpolitician"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "HonestPoliticianKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4   \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.golfing"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.golfing"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "GolfingKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4   \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.shopping"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.shopping"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "ShoppingKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4    \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "StateSalienceKB"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.state.salience"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "StateSalienceKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "StateAgendaGroupKB"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.state.agendagroup"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "StateAgendaGroupKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4    \cf0\par
+\cf4     \cf1 <\cf2 kbase\cf0  \cf3 name\cf4 =\cf5\i "org.drools.examples.cashflow"\cf0\i0  \cf3 packages\cf4 =\cf5\i "org.drools.examples.cashflow"\cf1\i0 >\cf0\par
+\cf4         \cf1 <\cf2 ksession\cf0  \cf3 name\cf4 =\cf5\i "CashFlowKS"\cf1\i0 />\cf0\par
+\cf4     \cf1 </\cf2 kbase\cf1 >\cf4   \cf0\par
+\cf1 </\cf2 kmodule\cf1 >\cf0\f0\par
+\par
+\par
+\par
+\par
+}
+ 

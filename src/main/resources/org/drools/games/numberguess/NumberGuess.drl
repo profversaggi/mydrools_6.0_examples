@@ -1,0 +1,122 @@
+package org.drools.games.numberguess
+
+// Import the POJO objects in question from their sources ...
+import org.drools.games.numberguess.RandomNumber
+import org.drools.games.numberguess.Guess
+import org.drools.games.numberguess.Game
+import org.drools.games.numberguess.GameRules
+
+// Get these for the command line reading ....
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
+dialect "mvel"
+
+
+
+/*
+This rule checks to see if there is a GameRules object existing in working memory,
+if so it creates a new random number object and inserts it into the working memory.
+Finally it sets the focus to the agenda-group 'guess' to begin the game.
+*/
+
+rule Main 
+when
+    rules : GameRules( )
+then
+    insert( new RandomNumber( rules.maxRange ) );
+    setFocus("Guess");
+end
+
+
+/*
+This rule check to see if there is a game object in working memory whose number 
+of guesses have exceeded the allowable limit, and there is no Guess objects in
+working memory. Then it prints out a proper message indicating such.
+*/
+
+rule "No more Guesses" 
+when
+    rules : GameRules( )
+    game : Game( guessCount == rules.allowedGuesses )
+    not Guess()
+    r : RandomNumber()
+then
+    System.out.println( "You have no more guesses\nThe correct guess was " + r.value );
+end
+
+
+/*
+This rule fetches the users guess from the command line, parses it, and inserts it into memory.
+It also uses a 'game' as a handle with which to modify the working memory for the guessCount 
+changes.
+*/
+
+rule "Get user Guess" 
+agenda-group "Guess" 
+when
+    $r : RandomNumber()
+    rules : GameRules( )
+    game : Game(  guessCount < rules.allowedGuesses  )
+    not Guess()
+then
+    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
+    br = new BufferedReader( new InputStreamReader( System.in ) );
+
+    modify (game) { guessCount = game.guessCount + 1 }
+    int i = Integer.parseInt( br.readLine() );
+    insert( new Guess( i ) );
+end
+
+
+/*
+This rule records the highest guess for comparison sake.
+*/
+
+rule "Record the highest Guess" 
+agenda-group "Guess"  
+no-loop 
+when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value > r.value)
+then
+    modify ( game ) { biggest = guess.value };
+    retract( guess );
+    System.out.println( "Your guess was too high" );
+end
+
+
+/*
+This rule records the lowest guess for comparison sake.
+*/
+
+rule "Record the lowest Guess" 
+agenda-group "Guess" 
+when
+    game : Game( )
+    r : RandomNumber()
+    guess :  Guess(value < r.value )
+then
+    modify ( game ) { smallest = guess.value };
+    retract( guess );
+    System.out.println( "Your guess was too low" );
+end
+
+
+/*
+This rule fires when the guess matched the random number, indicating success.
+*/
+
+rule "Guess correct" 
+agenda-group "Guess" 
+when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value == r.value)
+then
+    System.out.println( "You guessed correctly" );
+end
+
+
+
