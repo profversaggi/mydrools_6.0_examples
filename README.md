@@ -31,3 +31,20 @@ Should you want to know anything about me, I would have you peruse my online res
 This is meant as an educational piece, please feel free to use it as benefits you, just drop me a note if you find it 
 useful.
 
+A Listing of My Examples is below:
+
+* HelloWorld
+* Backward Chaining
+* CashFlow
+* Fibonacci
+* Golfing Riddle
+* Honest Politician Riddle
+* Shopping Example
+* State Example
+* Number Guess Game
+* Banking Example
+* 
+
+Note: The kmodule you need to use is located in the src/main/resources/META-INF directory, ignore the other one.
+
+
