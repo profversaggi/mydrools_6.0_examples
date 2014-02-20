@@ -45,9 +45,7 @@ A Listing of My Examples is below:
 * Banking Example
 
 
-Notes: The kmodule you need to use is located in the src/main/resources/META-INF directory, ignore the other one.
-       My developer notes if a Microsoft Rich Text file, which doesn't render too well on GitHub. :-(
-       Lastly, the comments are in the source code, so look there to peruse the details.
+Notes: The kmodule you need to use is located in the src/main/resources/META-INF directory, ignore the other one.       My developer notes if a Microsoft Rich Text file, which doesn't render too well on GitHub. Lastly, the comments are in the source code, so look there to peruse the details.
        
        
        
