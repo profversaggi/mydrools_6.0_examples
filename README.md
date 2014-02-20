@@ -43,8 +43,8 @@ A Listing of My Examples is below:
 * State Example
 * Number Guess Game
 * Banking Example
-* 
 
-Note: The kmodule you need to use is located in the src/main/resources/META-INF directory, ignore the other one.
 
+Notes: The kmodule you need to use is located in the src/main/resources/META-INF directory, ignore the other one.
+      My developer notes if a Microsoft Rich Text file, which doesn't render too well on GitHub. :-(
 
